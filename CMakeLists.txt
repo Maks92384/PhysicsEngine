@@ -25,6 +25,13 @@ add_executable(main src/main.cpp
         src/events.cpp
         src/events.hpp
         src/configuration.hpp
+        src/PhysicsEngine/Core/PhysicsEngine.cpp
+        src/PhysicsEngine/Core/PhysicsEngine.hpp
+        src/PhysicsEngine/Object/PhysicsObject.cpp
+        src/PhysicsEngine/Object/PhysicsObject.hpp
+        src/PhysicsEngine/Configuration/PhysicsEngineConfiguration.hpp
+        src/PhysicsEngine/Display/Engine3DIntegration.cpp
+        src/PhysicsEngine/Display/Engine3DIntegration.hpp
 )
 
 target_compile_features(main PRIVATE cxx_std_17)
