@@ -1,7 +1,7 @@
 #include "Engine3DIntegration.hpp"
-
 #include "../Configuration/PhysicsEngineConfiguration.hpp"
 #include "3DEngine/Engine3D.hpp"
+#include <cmath>
 
 unsigned int Engine3DIntegration::objectCount = 0;
 
@@ -12,6 +12,7 @@ void Engine3DIntegration::displayPhysicalObjects(vector<PhysicsObject>& physicsO
             Engine3D::loadFromFile("../Models/testBox.obj", "PhysicalObject_" + i);
         }
         Engine3D::getObject("PhysicalObject_" + i).setPosition(physicsObjects[i].getPosition() * physicsConf::distanceScale);
+        Engine3D::getObject("PhysicalObject_" + i).setScale(physicsConf::distanceScale);
         Engine3D::getObject("PhysicalObject_" + i).setRotation({physicsObjects[i].getOrientation().x, physicsObjects[i].getOrientation().y, physicsObjects[i].getOrientation().z});
     }
 }

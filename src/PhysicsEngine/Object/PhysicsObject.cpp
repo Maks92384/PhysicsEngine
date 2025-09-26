@@ -9,6 +9,21 @@ PhysicsObject::PhysicsObject(sf::Vector3f position) : PhysicsObject(position, 1)
 
 PhysicsObject::PhysicsObject() : PhysicsObject({0, 0, 0}, 1) {}
 
+
+
+void PhysicsObject::applyForce(sf::Vector3f applicationPoint, sf::Vector3f force) {
+    forces.push_back({applicationPoint, force});
+}
+
+void PhysicsObject::clearForces() {
+    forces.clear();
+}
+
+vector<array<sf::Vector3f, 2>>& PhysicsObject::getForces() {
+    return forces;
+}
+
+
 void PhysicsObject::setMass(float newMass) {
     mass = newMass;
 }

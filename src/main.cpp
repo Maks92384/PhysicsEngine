@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <cmath>
 #include "configuration.hpp"
 #include "events.hpp"
 #include "3DEngine/Camera.hpp"
@@ -15,11 +16,9 @@ int main() {
     Engine3D::enableDebugMode();
 
     sf::Clock clock;
-    float deltaTime = 0.0f; // Time between frames in microseconds
+    unsigned int deltaTime = 0; // Time between frames in microseconds
 
-    PhysicsObject& object = PhysicsEngine::createObject();
-
-    object.setOrientation({0, 45, 0});
+    PhysicsObject& object = PhysicsEngine::createObject({0, 0, 0});
 
 
     while (window.isOpen())
@@ -27,6 +26,9 @@ int main() {
         clock.restart();
 
         manageEvents(window);
+
+        object.applyForce({0, 0, 0}, {0, -0.1, 0});
+        object.applyForce({1, 0, 0}, {0, 0.2, 0});
 
         PhysicsEngine::update(deltaTime);
         PhysicsEngine::show();
