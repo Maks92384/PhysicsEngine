@@ -4,6 +4,7 @@
 
 #include "configuration.hpp"
 #include "events.hpp"
+#include "../cmake-build-debug/_deps/3dengine-src/src/3DEngine/functions.hpp"
 #include "3DEngine/Camera.hpp"
 #include "3DEngine/Engine3D.hpp"
 #include "PhysicsEngine/Core/PhysicsEngine.hpp"
@@ -20,17 +21,21 @@ int main() {
     sf::Clock clock;
     unsigned int deltaTime = 0; // Time between frames in microseconds
 
-    PhysicsObject& object = PhysicsEngine::createObject({0, 0, 0});
+    PhysicsObject& object = PhysicsEngine::createObject({2, (float) sqrt(2) + 1.0f / (float) sqrt(2), 0});
 
-    while (window.isOpen())
-    {
+    object.setOrientation({0, 0, -M_PI / 4});
+
+    while (window.isOpen()) {
         clock.restart();
 
         manageEvents(window);
 
+        object.applyForce({0, 0, 0}, {0, -1, 0});
+        //object.applyForce({0, -2, 0},  {0, 1 / (1 - 3 * (float) pow(cos(M_PI / 2 + object.getOrientation().z), 2)), 0});
+
         /*  ROCKET SIMULATOR
 
-        //object.applyForce({0, 0, 0}, {0, -1, 0});
+        object.applyForce({0, 0, 0}, {0, -1, 0});
 
         sf::Vector3f rocketEngineDirection = {0, 0, 0};
         sf::Vector3f rocketEngineForce = {0, 0, 0};
@@ -62,7 +67,8 @@ int main() {
         cout<<object.getOrientation().x<<endl;
         */
 
-        PhysicsEngine::update(deltaTime);
+        if (object.getOrientation().z > -M_PI / 2)
+            PhysicsEngine::update(deltaTime);
         PhysicsEngine::show();
 
         Camera::updateCamera(window);

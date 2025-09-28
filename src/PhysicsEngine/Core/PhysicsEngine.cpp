@@ -14,19 +14,25 @@ void PhysicsEngine::update(unsigned int deltaTime) {
         physicsObject.setAcceleration({0, 0, 0});
         physicsObject.setAngularAcceleration({0, 0, 0});
 
+        sf::Vector3f netForce = {0, 0, 0};
+
         for (const array<sf::Vector3f, 2>& force : physicsObject.getForces()) {
             const sf::Vector3f& forcePoint = Engine3D::rotateWithEulerVector(force[0], physicsObject.getOrientation());  // Point of force application
             const sf::Vector3f& forceVector = force[1];
 
+            netForce += forceVector;
+
             if (forceVector.length() == 0)
                 break;
 
-            sf::Vector3f linearForce;
+            /*
+            sf::Vector3f test = {0, 1, 0};
+            sf::Vector3f test2 = {0.0000000000000001, 9.99999999999999234, 0};
+            cout<<test.cross(test2).x<<" "<<test.cross(test2).y<<" "<<test.cross(test2).z<<endl;
+            cout<<test.cross(test2).normalized().x<<" "<<test.cross(test2).normalized().y<<" "<<test.cross(test2).normalized().z<<endl;
+            */
 
-            if (abs(forcePoint.cross(forceVector).x) < 0.000001 && abs(forcePoint.cross(forceVector).y) < 0.000001 && abs(forcePoint.cross(forceVector).z) < 0.000001) {
-                linearForce = forceVector;
-            } else {
-                linearForce = forcePoint * cos(angleBetween(forcePoint, forceVector)) * forceVector.length() / forcePoint.length();
+            if (abs(forcePoint.cross(forceVector).x) > 0.00001 || abs(forcePoint.cross(forceVector).y) > 0.00001 || abs(forcePoint.cross(forceVector).z) > 0.00001) {
 
                 /*
                 cout<<"-----"<<endl;
@@ -36,17 +42,17 @@ void PhysicsEngine::update(unsigned int deltaTime) {
                 cout<<forcePoint.cross(forceVector).normalized().x<<" "<<forcePoint.cross(forceVector).normalized().y<<" "<<forcePoint.cross(forceVector).normalized().z<<endl;
                 */
 
-                sf::Vector3f torque = forcePoint.cross(forceVector) * forcePoint.length() * forceVector.length() * sin(angleBetween(forcePoint, forceVector));
+                sf::Vector3f torque = forcePoint.cross(forceVector).normalized() * forcePoint.length() * forceVector.length() * sin(angleBetween(forcePoint, forceVector));
 
                 float momentOfInertia = physicsObject.getMass() * 5 / 3;
 
                 if (momentOfInertia != 0)
                     physicsObject.setAngularAcceleration(physicsObject.getAngularAcceleration() + torque / momentOfInertia);
             }
-
-            if (physicsObject.getMass() != 0)
-                physicsObject.setAcceleration(physicsObject.getAcceleration() + linearForce / physicsObject.getMass());
         }
+
+        if (physicsObject.getMass() != 0)
+            physicsObject.setAcceleration(physicsObject.getAcceleration() + netForce / physicsObject.getMass());
 
         physicsObject.setVelocity(physicsObject.getVelocity() + physicsObject.getAcceleration() * (float) deltaTime / 1000000.0f);
         physicsObject.setPosition(physicsObject.getPosition() + physicsObject.getVelocity() * (float) deltaTime / 1000000.0f);
