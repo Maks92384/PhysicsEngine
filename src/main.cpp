@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#include <iostream>
+
 #include "configuration.hpp"
 #include "events.hpp"
 #include "3DEngine/Camera.hpp"
@@ -20,15 +22,45 @@ int main() {
 
     PhysicsObject& object = PhysicsEngine::createObject({0, 0, 0});
 
-
     while (window.isOpen())
     {
         clock.restart();
 
         manageEvents(window);
 
-        object.applyForce({0, 0, 0}, {0, -0.1, 0});
-        object.applyForce({1, 0, 0}, {0, 0.2, 0});
+        /*  ROCKET SIMULATOR
+
+        //object.applyForce({0, 0, 0}, {0, -1, 0});
+
+        sf::Vector3f rocketEngineDirection = {0, 0, 0};
+        sf::Vector3f rocketEngineForce = {0, 0, 0};
+        float rocketEnginePower = 1.5;
+        float rocketEngineGimbalAngle = M_PI / 12;
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+            rocketEngineDirection += {1, 0, 0};
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+            rocketEngineDirection += {-1, 0, 0};
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+            rocketEngineDirection += {0, 0, 1};
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+            rocketEngineDirection += {0, 0, -1};
+        if (rocketEngineDirection.length() != 0)
+            rocketEngineDirection = rocketEngineDirection.normalized() * sin(rocketEngineGimbalAngle) * rocketEnginePower;
+        rocketEngineForce = {rocketEngineDirection.x, cos(rocketEngineGimbalAngle) * rocketEnginePower, rocketEngineDirection.z};
+
+        object.applyForce({0, -2, 0}, Engine3D::rotateWithEulerVector(rocketEngineForce, object.getOrientation()));
+        */
+
+
+        /*
+        0.388229 1.44889 0
+        cout<<"-----------------------------------"<<endl;
+        -0.388229 1.39952 0.375
+        cout<<rocketEngine.x<<" "<<rocketEngine.y<<" "<<rocketEngine.z<<endl;
+        cout<<object.getVelocity().x<<" "<<object.getVelocity().y<<" "<<object.getVelocity().z<<endl;
+        cout<<object.getOrientation().x<<endl;
+        */
 
         PhysicsEngine::update(deltaTime);
         PhysicsEngine::show();
