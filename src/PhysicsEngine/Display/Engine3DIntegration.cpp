@@ -11,7 +11,7 @@ void Engine3DIntegration::displayPhysicalObjects(vector<PhysicsObject>& physicsO
             objectCount++;
             Engine3D::loadFromFile("../Models/testBox.obj", "PhysicalObject_" + i);
         }
-        Engine3D::getObject("PhysicalObject_" + i).setPosition(physicsObjects[i].getPosition() * physicsConf::distanceScale);
+        Engine3D::getObject("PhysicalObject_" + i).setPosition((physicsObjects[i].getPosition() + Engine3D::rotateWithEulerVector(sf::Vector3f{-1, 0, 0}, physicsObjects[i].getOrientation())) * physicsConf::distanceScale);
         Engine3D::getObject("PhysicalObject_" + i).setScale(physicsConf::distanceScale);
         Engine3D::getObject("PhysicalObject_" + i).setRotation({physicsObjects[i].getOrientation().x, physicsObjects[i].getOrientation().y, physicsObjects[i].getOrientation().z});
     }

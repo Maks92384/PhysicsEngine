@@ -21,7 +21,7 @@ int main() {
     sf::Clock clock;
     unsigned int deltaTime = 0; // Time between frames in microseconds
 
-    PhysicsObject& object = PhysicsEngine::createObject({2, (float) sqrt(2) + 1.0f / (float) sqrt(2), 0});
+    PhysicsObject& object = PhysicsEngine::createObject({2, 2 / (float) sqrt(2), 0});
 
     object.setOrientation({0, 0, -M_PI / 4});
 
@@ -31,7 +31,7 @@ int main() {
         manageEvents(window);
 
         object.applyForce({0, 0, 0}, {0, -1, 0});
-        //object.applyForce({0, -2, 0},  {0, 1 / (1 - 3 * (float) pow(cos(M_PI / 2 + object.getOrientation().z), 2)), 0});
+        object.setOrientation({0, 0, -acos(object.getPosition().y / 2)});
 
         /*  ROCKET SIMULATOR
 

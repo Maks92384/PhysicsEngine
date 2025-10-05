@@ -2,7 +2,9 @@
 #include "../Display/Engine3DIntegration.hpp"
 
 #include <iostream>
+#include <iomanip>
 #include <cmath>
+#include <math.h>
 #include <3DEngine/Engine3D.hpp>
 
 #include "../../../cmake-build-debug/_deps/3dengine-src/src/3DEngine/functions.hpp"
@@ -31,9 +33,20 @@ void PhysicsEngine::update(unsigned int deltaTime) {
             cout<<test.cross(test2).x<<" "<<test.cross(test2).y<<" "<<test.cross(test2).z<<endl;
             cout<<test.cross(test2).normalized().x<<" "<<test.cross(test2).normalized().y<<" "<<test.cross(test2).normalized().z<<endl;
             */
+            /*
+            cout<<"-------------------------------------------------------------"<<endl;
+            cout<<forcePoint.x<<" "<<forcePoint.y<<" "<<forcePoint.z<<endl;
+            cout<<forceVector.x<<" "<<forceVector.y<<" "<<forceVector.z<<endl;
+            cout<<setprecision(20)<<forcePoint.dot(forceVector) / forcePoint.length() / forceVector.length()<<endl;
+            cout<<!isnan(angleBetween(forcePoint, forceVector))<<endl;
+            cout<<(angleBetween(forcePoint, forceVector) != (float) M_PI)<<endl;
+            cout<<acos(forcePoint.dot(forceVector) / forcePoint.length() / forceVector.length())<<endl;
+            cout<<angleBetween(forcePoint, forceVector)<<endl;
+            cout<<(float) M_PI<<endl;
+            cout<<M_PI<<endl;
+            */
 
-            if (abs(forcePoint.cross(forceVector).x) > 0.00001 || abs(forcePoint.cross(forceVector).y) > 0.00001 || abs(forcePoint.cross(forceVector).z) > 0.00001) {
-
+            if (!isnan(angleBetween(forcePoint, forceVector)) && forcePoint.cross(forceVector).length() > 0) {
                 /*
                 cout<<"-----"<<endl;
                 cout<<forcePoint.x<<" "<<forcePoint.y<<" "<<forcePoint.z<<endl;
