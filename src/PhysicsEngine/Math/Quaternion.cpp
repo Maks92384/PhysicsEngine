@@ -149,5 +149,12 @@ sf::Vector3f Quaternion::getAxis() const {
         axis.z = z / sin(getAngle() / 2);
     }
 
+    if (axis.length() != 0)
+        axis = axis.normalized();
+
     return axis;
+}
+
+sf::Vector3f Quaternion::toEulerVector() const {
+    return getAxis() * getAngle();
 }

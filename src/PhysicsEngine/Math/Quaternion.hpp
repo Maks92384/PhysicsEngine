@@ -30,4 +30,6 @@ public:
 
     float getAngle() const;
     sf::Vector3f getAxis() const;
+
+    sf::Vector3f toEulerVector() const;
 };
