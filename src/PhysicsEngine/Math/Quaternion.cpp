@@ -83,7 +83,7 @@ void Quaternion::normalize() {
     z = z / length;
 }
 
-sf::Vector3f Quaternion::rotate(const sf::Vector3f& point, const Quaternion& q) {
+sf::Vector3f Quaternion::rotatePoint(const sf::Vector3f& point, const Quaternion& q) {
     Quaternion p = Quaternion(0, 0, 0, 0);
     p.setW(0);
     p.setX(point.x);
@@ -132,4 +132,22 @@ float Quaternion::getY() const {
 
 float Quaternion::getZ() const {
     return z;
+}
+
+float Quaternion::getAngle() const {
+    if (abs(w) > 1)
+        return 2.0f * acos(fmod(w, 1.0f));
+    return 2.0f * acos(w);
+}
+
+sf::Vector3f Quaternion::getAxis() const {
+    sf::Vector3f axis = {x, y, z};
+
+    if (sin(getAngle() / 2) != 0) {
+        axis.x = x / sin(getAngle() / 2);
+        axis.y = y / sin(getAngle() / 2);
+        axis.z = z / sin(getAngle() / 2);
+    }
+
+    return axis;
 }
