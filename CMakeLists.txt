@@ -32,6 +32,14 @@ add_executable(main src/main.cpp
         src/PhysicsEngine/Configuration/PhysicsEngineConfiguration.hpp
         src/PhysicsEngine/Display/Engine3DIntegration.cpp
         src/PhysicsEngine/Display/Engine3DIntegration.hpp
+        src/PhysicsEngine/Constraints/Constraints.cpp
+        src/PhysicsEngine/Constraints/Constraints.hpp
+        src/PhysicsEngine/Constraints/ConstraintTemplate.cpp
+        src/PhysicsEngine/Constraints/ConstraintTemplate.hpp
+        src/PhysicsEngine/Constraints/PlaneConstraint.cpp
+        src/PhysicsEngine/Constraints/PlaneConstraint.hpp
+        src/PhysicsEngine/Math/Quaternion.cpp
+        src/PhysicsEngine/Math/Quaternion.hpp
 )
 
 target_compile_features(main PRIVATE cxx_std_17)
