@@ -1,13 +1,19 @@
 #include "PhysicsObject.hpp"
+#include "../Configuration/PhysicsEngineConfiguration.hpp"
+#include "3DEngine/Engine3D.hpp"
 
 
-PhysicsObject::PhysicsObject(sf::Vector3f position, float mass) : mass(mass), position(position), velocity({0, 0, 0}), acceleration( {0, 0, 0}), angularVelocity( {0, 0, 0}), angularAcceleration({0, 0, 0}) {}
+PhysicsObject::PhysicsObject(sf::Vector3f position, sf::Vector3f hitbox, float mass) : position(position), hitbox(hitbox), mass(mass), velocity({0, 0, 0}), acceleration( {0, 0, 0}), orientation(Quaternion(0, 0, 0, 0)), angularVelocity( {0, 0, 0}), angularAcceleration({0, 0, 0}) {}
+
+PhysicsObject::PhysicsObject(sf::Vector3f position, float mass) : PhysicsObject(position, physicsConf::defaultHitbox,  mass) {}
+
+PhysicsObject::PhysicsObject(sf::Vector3f position, sf::Vector3f hitbox) : PhysicsObject(position, hitbox, 1) {}
 
 PhysicsObject::PhysicsObject(float mass) : PhysicsObject({0, 0, 0}, mass) {}
 
 PhysicsObject::PhysicsObject(sf::Vector3f position) : PhysicsObject(position, 1) {}
 
-PhysicsObject::PhysicsObject() : PhysicsObject({0, 0, 0}, 1) {}
+PhysicsObject::PhysicsObject() : PhysicsObject(1) {}
 
 
 
@@ -40,8 +46,16 @@ void PhysicsObject::setAcceleration(sf::Vector3f newAcceleration) {
     acceleration = newAcceleration;
 }
 
-void PhysicsObject::setOrientation(sf::Vector3f newOrientation) {
-    orientation = newOrientation;
+void PhysicsObject::setOrientation(const Quaternion& newOrientationQuaternion) {
+    orientation = newOrientationQuaternion;
+}
+
+void PhysicsObject::rotateGlobal(const Quaternion& rotationQuaternion) {
+    orientation = rotationQuaternion.multiply(orientation);
+}
+
+void PhysicsObject::rotateLocal(const Quaternion& rotationQuaternion) {
+    orientation = orientation.multiply(rotationQuaternion);
 }
 
 void PhysicsObject::setAngularVelocity(sf::Vector3f newVelocity) {
@@ -68,7 +82,7 @@ sf::Vector3f PhysicsObject::getAcceleration() {
     return acceleration;
 }
 
-sf::Vector3f PhysicsObject::getOrientation() {
+Quaternion PhysicsObject::getOrientation() {
     return orientation;
 }
 
@@ -78,6 +92,10 @@ sf::Vector3f PhysicsObject::getAngularVelocity() {
 
 sf::Vector3f PhysicsObject::getAngularAcceleration() {
     return angularAcceleration;
+}
+
+sf::Vector3f PhysicsObject::getHitbox() {
+    return hitbox;
 }
 
 void PhysicsObject::hide() {

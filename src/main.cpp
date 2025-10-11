@@ -1,13 +1,16 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
+#include <iomanip>
 
 #include "configuration.hpp"
 #include "events.hpp"
 #include "../cmake-build-debug/_deps/3dengine-src/src/3DEngine/functions.hpp"
 #include "3DEngine/Camera.hpp"
 #include "3DEngine/Engine3D.hpp"
+#include "PhysicsEngine/Constraints/Constraints.hpp"
 #include "PhysicsEngine/Core/PhysicsEngine.hpp"
+#include "PhysicsEngine/Math/Quaternion.hpp"
 
 using namespace std;
 
@@ -17,21 +20,32 @@ int main() {
     window.setMouseCursorVisible(false);
     sf::Mouse::setPosition(static_cast<sf::Vector2i>(conf::window_size) / 2);
     Engine3D::enableDebugMode();
+    Camera::setRotation({0, 0, 0});
+    Camera::setPosition({0, 0, 1000});
 
     sf::Clock clock;
     unsigned int deltaTime = 0; // Time between frames in microseconds
 
-    PhysicsObject& object = PhysicsEngine::createObject({2, 2 / (float) sqrt(2), 0});
+    //PhysicsObject& object = PhysicsEngine::createObject({2, 2 / (float) sqrt(2), 0});
+    PhysicsObject& object = PhysicsEngine::createObject({0, 0, 0});
 
-    object.setOrientation({0, 0, -M_PI / 4});
+    //object.setOrientation({0, 0, -M_PI / 2});
+    //object.setPosition({2, 2 * cos(object.getOrientation().z), 0});
+
+    object.setAngularVelocity({-20, 0, 0});
+    //object.setOrientation(Quaternion(1, 0, 1, 0));
+
+    //Constraints::addPlaneConstraint({0, 0, 0}, 1);
 
     while (window.isOpen()) {
         clock.restart();
 
         manageEvents(window);
+        // Moment of inertia DEMO
 
-        object.applyForce({0, 0, 0}, {0, -1, 0});
-        object.setOrientation({0, 0, -acos(object.getPosition().y / 2)});
+        object.applyForce({-2, 0, 0}, {0, -10, 0});
+        object.applyForce({2, 0, 0}, {0, 10, 0});
+
 
         /*  ROCKET SIMULATOR
 
@@ -67,7 +81,8 @@ int main() {
         cout<<object.getOrientation().x<<endl;
         */
 
-        if (object.getOrientation().z > -M_PI / 2)
+        //if (object.getPosition().y > -1)
+        //if (object.getOrientation().toEulerVector().z < M_PI / 2)
             PhysicsEngine::update(deltaTime);
         PhysicsEngine::show();
 

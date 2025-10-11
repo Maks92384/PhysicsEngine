@@ -45,7 +45,13 @@ Quaternion Quaternion::multiply(const Quaternion& q2) const {
 }
 
 Quaternion Quaternion::conjugated() const {
-    Quaternion newQuaternion = Quaternion(w, -x, -y, -z);
+    Quaternion newQuaternion = Quaternion(0, 0, 0, 0);
+
+    newQuaternion.setW(w);
+    newQuaternion.setX(-x);
+    newQuaternion.setY(-y);
+    newQuaternion.setZ(-z);
+
     return newQuaternion;
 }
 
@@ -89,8 +95,6 @@ sf::Vector3f Quaternion::rotatePoint(const sf::Vector3f& point, const Quaternion
     p.setX(point.x);
     p.setY(point.y);
     p.setZ(point.z);
-
-    p.normalize();
 
     p = q.multiply(p);
     p = p.multiply(q.conjugated());

@@ -6,8 +6,8 @@
 #include <cmath>
 #include <math.h>
 #include <3DEngine/Engine3D.hpp>
-
-#include "../../../cmake-build-debug/_deps/3dengine-src/src/3DEngine/functions.hpp"
+#include <3DEngine/functions.hpp>
+#include "../Constraints/Constraints.hpp"
 
 vector<PhysicsObject> PhysicsEngine::physicsObjects;
 
@@ -19,7 +19,7 @@ void PhysicsEngine::update(unsigned int deltaTime) {
         sf::Vector3f netForce = {0, 0, 0};
 
         for (const array<sf::Vector3f, 2>& force : physicsObject.getForces()) {
-            const sf::Vector3f& forcePoint = Engine3D::rotateWithEulerVector(force[0], physicsObject.getOrientation());  // Point of force application
+            const sf::Vector3f& forcePoint = Quaternion::rotatePoint(force[0], physicsObject.getOrientation());  // Point of force application
             const sf::Vector3f& forceVector = force[1];
 
             netForce += forceVector;
@@ -70,10 +70,14 @@ void PhysicsEngine::update(unsigned int deltaTime) {
         physicsObject.setVelocity(physicsObject.getVelocity() + physicsObject.getAcceleration() * (float) deltaTime / 1000000.0f);
         physicsObject.setPosition(physicsObject.getPosition() + physicsObject.getVelocity() * (float) deltaTime / 1000000.0f);
 
+        //physicsObject.setAngularAcceleration({0, 0, -10});
         physicsObject.setAngularVelocity(physicsObject.getAngularVelocity() + physicsObject.getAngularAcceleration() * (float) deltaTime / 1000000.0f);
-        physicsObject.setOrientation(physicsObject.getOrientation() + physicsObject.getAngularVelocity() * (float) deltaTime / 1000000.0f);
+        sf::Vector3f rotationDirection = physicsObject.getAngularVelocity().length() != 0 ? physicsObject.getAngularVelocity().normalized() : sf::Vector3f(0, 0, 0);
+        physicsObject.rotateGlobal(Quaternion(physicsObject.getAngularVelocity().length() * (float) deltaTime / 1000000.0f, rotationDirection.x, rotationDirection.y, rotationDirection.z));
 
         physicsObject.clearForces();
+
+        Constraints::constrain(physicsObject);
     }
 }
 
@@ -88,4 +92,5 @@ PhysicsObject& PhysicsEngine::createObject() {
 
 void PhysicsEngine::show() {
     Engine3DIntegration::displayPhysicalObjects(physicsObjects);
+    Engine3DIntegration::displayConstraints();
 }
