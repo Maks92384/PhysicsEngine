@@ -46,15 +46,15 @@ void PhysicsObject::setAcceleration(sf::Vector3f newAcceleration) {
     acceleration = newAcceleration;
 }
 
-void PhysicsObject::setOrientation(const Quaternion& newOrientationQuaternion) {
+void PhysicsObject::setOrientation(Quaternion newOrientationQuaternion) {
     orientation = newOrientationQuaternion;
 }
 
-void PhysicsObject::rotateGlobal(const Quaternion& rotationQuaternion) {
+void PhysicsObject::rotateGlobal(Quaternion rotationQuaternion) {
     orientation = rotationQuaternion.multiply(orientation);
 }
 
-void PhysicsObject::rotateLocal(const Quaternion& rotationQuaternion) {
+void PhysicsObject::rotateLocal(Quaternion rotationQuaternion) {
     orientation = orientation.multiply(rotationQuaternion);
 }
 
@@ -98,6 +98,47 @@ sf::Vector3f PhysicsObject::getHitbox() {
     return hitbox;
 }
 
+vector<sf::Vector3f> PhysicsObject::getCornerPointsUnrotated() {
+    vector<sf::Vector3f> cornerPoints;
+
+    cornerPoints.push_back(sf::Vector3f(-hitbox.x / 2, hitbox.y / 2, hitbox.z / 2));
+    cornerPoints.push_back(sf::Vector3f(hitbox.x / 2, hitbox.y / 2, hitbox.z / 2));
+    cornerPoints.push_back(sf::Vector3f(hitbox.x / 2, hitbox.y / 2, -hitbox.z / 2));
+    cornerPoints.push_back(sf::Vector3f(-hitbox.x / 2, hitbox.y / 2, -hitbox.z / 2));
+    cornerPoints.push_back(sf::Vector3f(-hitbox.x / 2, -hitbox.y / 2, hitbox.z / 2));
+    cornerPoints.push_back(sf::Vector3f(hitbox.x / 2, -hitbox.y / 2, hitbox.z / 2));
+    cornerPoints.push_back(sf::Vector3f(hitbox.x / 2, -hitbox.y / 2, -hitbox.z / 2));
+    cornerPoints.push_back(sf::Vector3f(-hitbox.x / 2, -hitbox.y / 2, -hitbox.z / 2));
+
+    return cornerPoints;
+}
+
+vector<sf::Vector3f> PhysicsObject::getCornerPoints() {
+    vector<sf::Vector3f> cornerPoints = getCornerPointsUnrotated();
+
+    for (sf::Vector3f& cornerPoint : cornerPoints) {
+        cornerPoint = Quaternion::rotatePoint(cornerPoint, orientation);
+    }
+
+    return cornerPoints;
+}
+
+array<array<array<sf::Vector3f, 2>, 2>, 2> PhysicsObject::getCornerPointsAs3DArray() {
+    array<array<array<sf::Vector3f, 2>, 2>, 2> cornerPoints;
+
+    cornerPoints[0][0][0] = Quaternion::rotatePoint(sf::Vector3f(-hitbox.x / 2, hitbox.y / 2, hitbox.z / 2), orientation);
+    cornerPoints[1][0][0] = Quaternion::rotatePoint(sf::Vector3f(hitbox.x / 2, hitbox.y / 2, hitbox.z / 2), orientation);
+    cornerPoints[1][0][1] = Quaternion::rotatePoint(sf::Vector3f(hitbox.x / 2, hitbox.y / 2, -hitbox.z / 2), orientation);
+    cornerPoints[0][0][1] = Quaternion::rotatePoint(sf::Vector3f(-hitbox.x / 2, hitbox.y / 2, -hitbox.z / 2), orientation);
+    cornerPoints[0][1][0] = Quaternion::rotatePoint(sf::Vector3f(-hitbox.x / 2, -hitbox.y / 2, hitbox.z / 2), orientation);
+    cornerPoints[1][1][0] = Quaternion::rotatePoint(sf::Vector3f(hitbox.x / 2, -hitbox.y / 2, hitbox.z / 2), orientation);
+    cornerPoints[1][1][1] = Quaternion::rotatePoint(sf::Vector3f(hitbox.x / 2, -hitbox.y / 2, -hitbox.z / 2), orientation);
+    cornerPoints[0][1][1] = Quaternion::rotatePoint(sf::Vector3f(-hitbox.x / 2, -hitbox.y / 2, -hitbox.z / 2), orientation);
+
+    return cornerPoints;
+}
+
+
 void PhysicsObject::hide() {
     hidden = true;
 }
@@ -105,3 +146,8 @@ void PhysicsObject::hide() {
 void PhysicsObject::show() {
     hidden = false;
 }
+
+bool PhysicsObject::isHidden() {
+    return hidden;
+}
+

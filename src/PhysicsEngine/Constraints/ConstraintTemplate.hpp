@@ -7,7 +7,13 @@ class ConstraintTemplate {
 protected:
     string type = "template";
 
+    bool hidden = false;
 public:
-    string getType();
+    void show();
+    void hide();
+
+    string getType() const;
+    bool isHidden() const;
+
     virtual ~ConstraintTemplate();
 };

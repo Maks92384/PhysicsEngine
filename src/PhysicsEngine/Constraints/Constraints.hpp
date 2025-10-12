@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ConstraintTemplate.hpp"
+#include "PlaneConstraint.hpp"
 #include "../Object/PhysicsObject.hpp"
 
 using namespace std;
@@ -10,8 +11,12 @@ class Constraints {
 public:
     static void constrain(PhysicsObject& physicsObject);
 
-    static void addPlaneConstraint(sf::Vector3f orientation, float offset);
-    static void addPlaneConstraint(sf::Vector3f orientation);
+    static void applyPlaneConstraint(PhysicsObject& physicsObject, const PlaneConstraint& planeConstraint);
+
+    static void addPlaneConstraint(Quaternion orientation, float offset);
+    static void addPlaneConstraint(Quaternion orientation);
+    static void addPlaneConstraint(float offset);
+    static void addPlaneConstraint();
 
     static vector<ConstraintTemplate*> getConstraints();
 };

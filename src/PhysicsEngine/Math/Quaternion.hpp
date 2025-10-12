@@ -9,6 +9,7 @@ public:
     Quaternion(float angle, float x, float y, float z);
 
     static sf::Vector3f rotatePoint(const sf::Vector3f& point, const Quaternion& q);
+    static sf::Vector3f unRotatePoint(const sf::Vector3f& point, const Quaternion& q);
 
     Quaternion multiply(const Quaternion& q2) const;
     Quaternion conjugated() const;

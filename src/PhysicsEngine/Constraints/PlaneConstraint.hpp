@@ -1,17 +1,20 @@
 #pragma once
 #include "ConstraintTemplate.hpp"
+#include "../Math/Quaternion.hpp"
 #include <SFML/Graphics.hpp>
 
 class PlaneConstraint : public ConstraintTemplate {
-    sf::Vector3f orientation; // euler vector
-    float offset;
+    Quaternion orientation; // A Quaternion describing plane direction
+    float offset; // distance from world center in meters
 public:
-    PlaneConstraint(sf::Vector3f orientation, float offset);
-    PlaneConstraint(sf::Vector3f orientation);
+    PlaneConstraint(Quaternion orientation, float offset);
+    PlaneConstraint(Quaternion orientation);
+    PlaneConstraint(float offset);
+    PlaneConstraint();
 
-    sf::Vector3f getOrientation();
-    float getOffset();
+    Quaternion getOrientation() const;
+    float getOffset() const;
 
-    void setOrientation(sf::Vector3f newOrientation);
+    void setOrientation(Quaternion newOrientation);
     void setOffset(float newOffset);
 };

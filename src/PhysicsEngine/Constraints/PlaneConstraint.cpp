@@ -1,21 +1,25 @@
 #include "PlaneConstraint.hpp"
 
-PlaneConstraint::PlaneConstraint(sf::Vector3f orientation, float offset) : orientation(orientation), offset(offset) {
+PlaneConstraint::PlaneConstraint(Quaternion orientation, float offset) : orientation(orientation), offset(offset) {
     type = "plane";
 }
-PlaneConstraint::PlaneConstraint(sf::Vector3f orientation) : PlaneConstraint(orientation, 0) {}
+PlaneConstraint::PlaneConstraint(Quaternion orientation) : PlaneConstraint(orientation, 0) {}
+
+PlaneConstraint::PlaneConstraint(float offset) : PlaneConstraint(Quaternion(0, 0, 0, 0), offset) {}
+
+PlaneConstraint::PlaneConstraint() : PlaneConstraint(0) {}
 
 
-sf::Vector3f PlaneConstraint::getOrientation() {
+Quaternion PlaneConstraint::getOrientation() const {
     return orientation;
 }
 
-float PlaneConstraint::getOffset() {
+float PlaneConstraint::getOffset() const {
     return offset;
 }
 
 
-void PlaneConstraint::setOrientation(sf::Vector3f newOrientation) {
+void PlaneConstraint::setOrientation(Quaternion newOrientation) {
     orientation = newOrientation;
 }
 

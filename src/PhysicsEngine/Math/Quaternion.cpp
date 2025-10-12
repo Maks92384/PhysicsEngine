@@ -104,6 +104,10 @@ sf::Vector3f Quaternion::rotatePoint(const sf::Vector3f& point, const Quaternion
     return newPoint;
 }
 
+sf::Vector3f Quaternion::unRotatePoint(const sf::Vector3f& point, const Quaternion& q) {
+    return rotatePoint(point, q.conjugated());
+}
+
 
 void Quaternion::setW(float w) {
     this->w = w;

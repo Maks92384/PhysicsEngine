@@ -15,37 +15,30 @@
 using namespace std;
 
 int main() {
-    auto window = sf::RenderWindow(sf::VideoMode(conf::window_size), "PhysicsEngine", sf::State::Fullscreen);
+    auto window = sf::RenderWindow(sf::VideoMode(conf::window_size), "PhysicsEngine", sf::State::Windowed);
     window.setFramerateLimit(conf::maxFps);
     window.setMouseCursorVisible(false);
     sf::Mouse::setPosition(static_cast<sf::Vector2i>(conf::window_size) / 2);
     Engine3D::enableDebugMode();
-    Camera::setRotation({0, 0, 0});
-    Camera::setPosition({0, 0, 1000});
+    Camera::setRotation({M_PI * 3 / 4, 0, 0});
+    Camera::setPosition({500, 200, -500});
 
     sf::Clock clock;
     unsigned int deltaTime = 0; // Time between frames in microseconds
 
-    //PhysicsObject& object = PhysicsEngine::createObject({2, 2 / (float) sqrt(2), 0});
-    PhysicsObject& object = PhysicsEngine::createObject({0, 0, 0});
+    PhysicsObject& object = PhysicsEngine::createObject({0, 5, 0});
 
-    //object.setOrientation({0, 0, -M_PI / 2});
-    //object.setPosition({2, 2 * cos(object.getOrientation().z), 0});
+    object.setOrientation(Quaternion(atan(sqrt(2)), 1, 0, 1));
+    object.setVelocity({0, -1, 0});
 
-    object.setAngularVelocity({-20, 0, 0});
-    //object.setOrientation(Quaternion(1, 0, 1, 0));
-
-    //Constraints::addPlaneConstraint({0, 0, 0}, 1);
+    Constraints::addPlaneConstraint();
 
     while (window.isOpen()) {
         clock.restart();
 
         manageEvents(window);
-        // Moment of inertia DEMO
 
-        object.applyForce({-2, 0, 0}, {0, -10, 0});
-        object.applyForce({2, 0, 0}, {0, 10, 0});
-
+        //object.applyForce({0, 0, 0}, {0, -1, 0});
 
         /*  ROCKET SIMULATOR
 
@@ -81,9 +74,7 @@ int main() {
         cout<<object.getOrientation().x<<endl;
         */
 
-        //if (object.getPosition().y > -1)
-        //if (object.getOrientation().toEulerVector().z < M_PI / 2)
-            PhysicsEngine::update(deltaTime);
+        PhysicsEngine::update(deltaTime);
         PhysicsEngine::show();
 
         Camera::updateCamera(window);

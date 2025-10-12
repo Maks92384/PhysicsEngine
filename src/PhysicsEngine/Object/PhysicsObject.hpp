@@ -38,9 +38,9 @@ public:
     void setPosition(sf::Vector3f newPosition);
     void setVelocity(sf::Vector3f newVelocity);
     void setAcceleration(sf::Vector3f newAcceleration);
-    void setOrientation(const Quaternion& newOrientationQuaternion);
-    void rotateGlobal(const Quaternion& rotationQuaternion);
-    void rotateLocal(const Quaternion& rotationQuaternion);
+    void setOrientation(Quaternion newOrientationQuaternion);
+    void rotateGlobal(Quaternion rotationQuaternion);
+    void rotateLocal(Quaternion rotationQuaternion);
     void setAngularVelocity(sf::Vector3f newAngularVelocity);
     void setAngularAcceleration(sf::Vector3f newAngularAcceleration);
 
@@ -52,7 +52,11 @@ public:
     sf::Vector3f getAngularVelocity();
     sf::Vector3f getAngularAcceleration();
     sf::Vector3f getHitbox();
+    vector<sf::Vector3f> getCornerPointsUnrotated();
+    vector<sf::Vector3f> getCornerPoints();
+    array<array<array<sf::Vector3f, 2>, 2>, 2> getCornerPointsAs3DArray();
 
     void hide();
     void show();
+    bool isHidden();
 };
