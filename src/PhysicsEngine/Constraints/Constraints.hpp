@@ -13,7 +13,7 @@ public:
     static void constrain(PhysicsObject& physicsObject, unsigned int deltaTime);
 
     static void applyPlaneConstraint(PhysicsObject& physicsObject, const PlaneConstraint& planeConstraint);
-    static void applyPointConstraint(PhysicsObject& physicsObject, const vector<PointConstraint>& pointConstraints, unsigned int deltaTime);
+    static void applyPointConstraint(PhysicsObject& physicsObject, unsigned int deltaTime);
 
     static void addPlaneConstraint(Quaternion orientation, float offset);
     static void addPlaneConstraint(Quaternion orientation);

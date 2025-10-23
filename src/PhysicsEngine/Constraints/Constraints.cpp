@@ -10,7 +10,7 @@ vector<ConstraintTemplate*> Constraints::constraints;
 void Constraints::constrain(PhysicsObject& physicsObject, unsigned int deltaTime) {
     physicsObject.setRotationAxisShift({0, 0, 0});
 
-    applyPointConstraint(physicsObject, physicsObject.getPointConstraints(), deltaTime);
+    applyPointConstraint(physicsObject, deltaTime);
 
     for (const auto& constraint : constraints) {
         if ((*constraint).getType() == "plane") {
@@ -41,6 +41,12 @@ void Constraints::applyPlaneConstraint(PhysicsObject& physicsObject, const Plane
 
     if (lowestPoint.y + objectPosition.y > planeConstraint.getOffset())
         return;
+
+    if (!physicsObject.getPointConstraints().empty()) {
+        physicsObject.setAngularVelocity({0, 0, 0});
+        physicsObject.setVelocity({0, 0, 0});
+        return;
+    }
 
     float length = lowestPoint.length(); // distance from the center of mass to the lowest corner
 
@@ -154,7 +160,9 @@ void Constraints::applyPlaneConstraint(PhysicsObject& physicsObject, const Plane
     physicsObject.rotateGlobal(Quaternion(rotationAngle, rotationAxis.x, rotationAxis.y, rotationAxis.z));
 }
 
-void Constraints::applyPointConstraint(PhysicsObject& physicsObject, const vector<PointConstraint>& pointConstraints, unsigned int deltaTime) {
+void Constraints::applyPointConstraint(PhysicsObject& physicsObject, unsigned int deltaTime) {
+    vector<PointConstraint> pointConstraints = physicsObject.getPointConstraints();
+
     if (pointConstraints.empty())
         return;
 

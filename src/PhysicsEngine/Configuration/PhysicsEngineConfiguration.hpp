@@ -1,7 +1,7 @@
 #pragma once
 
 namespace physicsConf {
-    static const sf::Vector3f defaultHitbox = {4, 2, 2};
+    static const sf::Vector3f defaultHitbox = {0.2, 2, 2};
 
     // 3D engine integration configuration
 

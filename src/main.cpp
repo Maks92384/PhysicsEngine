@@ -5,7 +5,6 @@
 
 #include "configuration.hpp"
 #include "events.hpp"
-#include "../cmake-build-debug/_deps/3dengine-src/src/3DEngine/functions.hpp"
 #include "3DEngine/Camera.hpp"
 #include "3DEngine/Engine3D.hpp"
 #include "PhysicsEngine/Constraints/Constraints.hpp"
@@ -15,7 +14,7 @@
 using namespace std;
 
 int main() {
-    auto window = sf::RenderWindow(sf::VideoMode(conf::window_size), "PhysicsEngine", sf::State::Fullscreen);
+    auto window = sf::RenderWindow(sf::VideoMode(conf::window_size), "PhysicsEngine", sf::State::Windowed);
     window.setFramerateLimit(conf::maxFps);
     window.setMouseCursorVisible(false);
     sf::Mouse::setPosition(static_cast<sf::Vector2i>(conf::window_size) / 2);
@@ -28,9 +27,9 @@ int main() {
 
     PhysicsObject& object = PhysicsEngine::createObject({-3, 0, 0});
 
-    //object.setAngularVelocity({0, 1, 0});
+    object.setAngularVelocity({-10, 0, 0});
 
-    //Constraints::addPlaneConstraint(Quaternion(0, 0, 0, 0), -1);
+    Constraints::addPlaneConstraint(Quaternion(0, 0, 0, 0), -2.5);
 
     Constraints::addPointConstraint(object, {0, 0, 0});
 
@@ -39,7 +38,8 @@ int main() {
 
         manageEvents(window);
 
-        object.applyForce({0, 0, 0}, {0, -1, 0});
+        object.applyForce({0, 0, 0}, {0, -10, 0});
+        object.applyForce({0, 1, 0}, Quaternion::rotatePoint({0, 0, 0.1}, object.getOrientation()));
 
         /*  ROCKET SIMULATOR
 
