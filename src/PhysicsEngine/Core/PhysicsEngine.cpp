@@ -19,7 +19,7 @@ void PhysicsEngine::update(unsigned int deltaTime) {
         sf::Vector3f netForce = {0, 0, 0};
 
         for (const array<sf::Vector3f, 2>& force : physicsObject.getForces()) {
-            const sf::Vector3f& forcePoint = Quaternion::rotatePoint(force[0], physicsObject.getOrientation());  // Point of force application
+            const sf::Vector3f& forcePoint = Quaternion::rotatePoint(force[0] - physicsObject.getRotationAxisShift(), physicsObject.getOrientation());  // Point of force application
             const sf::Vector3f& forceVector = force[1];
 
             netForce += forceVector;
@@ -57,7 +57,7 @@ void PhysicsEngine::update(unsigned int deltaTime) {
 
                 sf::Vector3f torque = forcePoint.cross(forceVector).normalized() * forcePoint.length() * forceVector.length() * sin(angleBetween(forcePoint, forceVector));
 
-                float momentOfInertia = physicsObject.getMass() * 5 / 3;
+                float momentOfInertia = physicsObject.getMass() * (5.0f / 3 + (float) pow(physicsObject.getRotationAxisShift().length(), 2));
 
                 if (momentOfInertia != 0)
                     physicsObject.setAngularAcceleration(physicsObject.getAngularAcceleration() + torque / momentOfInertia);
@@ -68,16 +68,20 @@ void PhysicsEngine::update(unsigned int deltaTime) {
             physicsObject.setAcceleration(physicsObject.getAcceleration() + netForce / physicsObject.getMass());
 
         physicsObject.setVelocity(physicsObject.getVelocity() + physicsObject.getAcceleration() * (float) deltaTime / 1000000.0f);
-        physicsObject.setPosition(physicsObject.getPosition() + physicsObject.getVelocity() * (float) deltaTime / 1000000.0f);
 
         //physicsObject.setAngularAcceleration({0, 0, -10});
         physicsObject.setAngularVelocity(physicsObject.getAngularVelocity() + physicsObject.getAngularAcceleration() * (float) deltaTime / 1000000.0f);
+
+
+        Constraints::constrain(physicsObject, deltaTime);
+
+
+        physicsObject.setPosition(physicsObject.getPosition() + physicsObject.getVelocity() * (float) deltaTime / 1000000.0f);
+
         sf::Vector3f rotationDirection = physicsObject.getAngularVelocity().length() != 0 ? physicsObject.getAngularVelocity().normalized() : sf::Vector3f(0, 0, 0);
         physicsObject.rotateGlobal(Quaternion(physicsObject.getAngularVelocity().length() * (float) deltaTime / 1000000.0f, rotationDirection.x, rotationDirection.y, rotationDirection.z));
 
         physicsObject.clearForces();
-
-        Constraints::constrain(physicsObject);
     }
 }
 

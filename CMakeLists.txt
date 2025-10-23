@@ -40,6 +40,8 @@ add_executable(main src/main.cpp
         src/PhysicsEngine/Constraints/PlaneConstraint.hpp
         src/PhysicsEngine/Math/Quaternion.cpp
         src/PhysicsEngine/Math/Quaternion.hpp
+        src/PhysicsEngine/Constraints/PointConstraint.cpp
+        src/PhysicsEngine/Constraints/PointConstraint.hpp
 )
 
 target_compile_features(main PRIVATE cxx_std_17)

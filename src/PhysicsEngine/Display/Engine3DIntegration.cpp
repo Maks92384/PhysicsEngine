@@ -20,6 +20,7 @@ void Engine3DIntegration::displayPhysicalObjects(vector<PhysicsObject>& physicsO
         Engine3D::getObject("PhysicalObject_" + i).setPosition(physicsObjects[i].getPosition() * physicsConf::distanceScale);
         Engine3D::getObject("PhysicalObject_" + i).setScale(physicsConf::distanceScale);
         Engine3D::getObject("PhysicalObject_" + i).setRotation(physicsObjects[i].getOrientation().toEulerVector());
+
         if (physicsObjects[i].isHidden())
             Engine3D::getObject("PhysicalObject_" + i).disable();
         else
@@ -39,12 +40,7 @@ void Engine3DIntegration::displayConstraints() {
             Engine3D::getObject("constraintObject_" + i).setPosition(Quaternion::rotatePoint(sf::Vector3f(0, planeOffset, 0), planeOrientation) * physicsConf::distanceScale);
             Engine3D::getObject("constraintObject_" + i).setRotation(planeOrientation.toEulerVector());
             Engine3D::getObject("constraintObject_" + i).setScale(physicsConf::distanceScale);
-
-            if ((*constraint).isHidden())
-                Engine3D::getObject("constraintObject_" + i).disable();
-            else
-                Engine3D::getObject("constraintObject_" + i).enable();
-            }
+        }
 
         i++;
     }
@@ -87,7 +83,7 @@ void Engine3DIntegration::makeObjectFromPlane(string name) {
 
     for (unsigned int i = 0; i < 10; i++) {
         for (unsigned int j = 0; j < 10; j++) {
-            //if ((i == 0 || i == 9) || (j == 0 || j == 9))
+            if ((i == 0 || i == 9) || (j == 0 || j == 9))
                 faces.push_back({11 * (i + 1) + j, 11 * (i + 1) + j + 1, 11 * i + j + 1, 11 * i + j});
         }
     }

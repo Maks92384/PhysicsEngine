@@ -3,7 +3,7 @@
 #include "3DEngine/Engine3D.hpp"
 
 
-PhysicsObject::PhysicsObject(sf::Vector3f position, sf::Vector3f hitbox, float mass) : position(position), hitbox(hitbox), mass(mass), velocity({0, 0, 0}), acceleration( {0, 0, 0}), orientation(Quaternion(0, 0, 0, 0)), angularVelocity( {0, 0, 0}), angularAcceleration({0, 0, 0}) {}
+PhysicsObject::PhysicsObject(sf::Vector3f position, sf::Vector3f hitbox, float mass) : position(position), hitbox(hitbox), mass(mass), velocity({0, 0, 0}), acceleration( {0, 0, 0}), orientation(Quaternion(0, 0, 0, 0)), angularVelocity( {0, 0, 0}), angularAcceleration({0, 0, 0}), rotationAxisShift({0, 0, 0}) {}
 
 PhysicsObject::PhysicsObject(sf::Vector3f position, float mass) : PhysicsObject(position, physicsConf::defaultHitbox,  mass) {}
 
@@ -66,6 +66,14 @@ void PhysicsObject::setAngularAcceleration(sf::Vector3f newVelocity) {
     angularAcceleration = newVelocity;
 }
 
+void PhysicsObject::setRotationAxisShift(sf::Vector3f newRotationAxisShift) {
+    rotationAxisShift = newRotationAxisShift;
+}
+
+void PhysicsObject::addPointConstraint(sf::Vector3f newPoint) {
+    pointConstraints.push_back(PointConstraint(newPoint));
+}
+
 float PhysicsObject::getMass() {
     return mass;
 }
@@ -96,6 +104,10 @@ sf::Vector3f PhysicsObject::getAngularAcceleration() {
 
 sf::Vector3f PhysicsObject::getHitbox() {
     return hitbox;
+}
+
+sf::Vector3f PhysicsObject::getRotationAxisShift() {
+    return rotationAxisShift;
 }
 
 vector<sf::Vector3f> PhysicsObject::getCornerPointsUnrotated() {
@@ -136,6 +148,10 @@ array<array<array<sf::Vector3f, 2>, 2>, 2> PhysicsObject::getCornerPointsAs3DArr
     cornerPoints[0][1][1] = Quaternion::rotatePoint(sf::Vector3f(-hitbox.x / 2, -hitbox.y / 2, -hitbox.z / 2), orientation);
 
     return cornerPoints;
+}
+
+vector<PointConstraint> PhysicsObject::getPointConstraints() const {
+    return pointConstraints;
 }
 
 

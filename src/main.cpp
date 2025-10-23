@@ -15,7 +15,7 @@
 using namespace std;
 
 int main() {
-    auto window = sf::RenderWindow(sf::VideoMode(conf::window_size), "PhysicsEngine", sf::State::Windowed);
+    auto window = sf::RenderWindow(sf::VideoMode(conf::window_size), "PhysicsEngine", sf::State::Fullscreen);
     window.setFramerateLimit(conf::maxFps);
     window.setMouseCursorVisible(false);
     sf::Mouse::setPosition(static_cast<sf::Vector2i>(conf::window_size) / 2);
@@ -26,19 +26,20 @@ int main() {
     sf::Clock clock;
     unsigned int deltaTime = 0; // Time between frames in microseconds
 
-    PhysicsObject& object = PhysicsEngine::createObject({0, 5, 0});
+    PhysicsObject& object = PhysicsEngine::createObject({-3, 0, 0});
 
-    object.setOrientation(Quaternion(atan(sqrt(2)), 1, 0, 1));
-    object.setVelocity({0, -1, 0});
+    //object.setAngularVelocity({0, 1, 0});
 
-    Constraints::addPlaneConstraint();
+    //Constraints::addPlaneConstraint(Quaternion(0, 0, 0, 0), -1);
+
+    Constraints::addPointConstraint(object, {0, 0, 0});
 
     while (window.isOpen()) {
         clock.restart();
 
         manageEvents(window);
 
-        //object.applyForce({0, 0, 0}, {0, -1, 0});
+        object.applyForce({0, 0, 0}, {0, -1, 0});
 
         /*  ROCKET SIMULATOR
 

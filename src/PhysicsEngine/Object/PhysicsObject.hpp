@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "../Math/Quaternion.hpp"
+#include "../Constraints/PointConstraint.hpp"
 
 using namespace std;
 
@@ -20,6 +21,10 @@ class PhysicsObject {
     Quaternion orientation; // normalized Quaternion describing the orientation
     sf::Vector3f angularVelocity; // in radians per second
     sf::Vector3f angularAcceleration; // in radians per second squared
+
+    sf::Vector3f rotationAxisShift; // the displacement of an axis of rotation due to some constraints
+
+    vector<PointConstraint> pointConstraints;
 
     bool hidden = false;
 public:
@@ -43,6 +48,8 @@ public:
     void rotateLocal(Quaternion rotationQuaternion);
     void setAngularVelocity(sf::Vector3f newAngularVelocity);
     void setAngularAcceleration(sf::Vector3f newAngularAcceleration);
+    void setRotationAxisShift(sf::Vector3f newRotationAxisShift);
+    void addPointConstraint(sf::Vector3f newPoint);
 
     float getMass();
     sf::Vector3f getPosition();
@@ -52,9 +59,11 @@ public:
     sf::Vector3f getAngularVelocity();
     sf::Vector3f getAngularAcceleration();
     sf::Vector3f getHitbox();
+    sf::Vector3f getRotationAxisShift();
     vector<sf::Vector3f> getCornerPointsUnrotated();
     vector<sf::Vector3f> getCornerPoints();
     array<array<array<sf::Vector3f, 2>, 2>, 2> getCornerPointsAs3DArray();
+    vector<PointConstraint> getPointConstraints() const;
 
     void hide();
     void show();

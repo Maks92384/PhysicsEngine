@@ -7,7 +7,11 @@
 
 vector<ConstraintTemplate*> Constraints::constraints;
 
-void Constraints::constrain(PhysicsObject& physicsObject) {
+void Constraints::constrain(PhysicsObject& physicsObject, unsigned int deltaTime) {
+    physicsObject.setRotationAxisShift({0, 0, 0});
+
+    applyPointConstraint(physicsObject, physicsObject.getPointConstraints(), deltaTime);
+
     for (const auto& constraint : constraints) {
         if ((*constraint).getType() == "plane") {
             applyPlaneConstraint(physicsObject, *dynamic_cast<PlaneConstraint*>(constraint));
@@ -72,8 +76,9 @@ void Constraints::applyPlaneConstraint(PhysicsObject& physicsObject, const Plane
 
         if (angleToX > angleToY && angleToX > angleToZ)
             minimumDistance = physicsObject.getHitbox().x / 2;
-        else if (angleToY > angleToX && angleToY > angleToZ)
+        else if (angleToY > angleToX && angleToY > angleToZ) {
             minimumDistance = physicsObject.getHitbox().y / 2;
+        }
         else if (angleToZ > angleToX && angleToZ > angleToY)
             minimumDistance = physicsObject.getHitbox().z / 2;
         else if (angleToX == angleToY)
@@ -114,6 +119,61 @@ void Constraints::applyPlaneConstraint(PhysicsObject& physicsObject, const Plane
 
     //physicsObject.setAngularVelocity(rotationAxis.normalized() * rotationAngle * 144.0f);
     physicsObject.rotateGlobal(Quaternion(rotationAngle, rotationAxis.x, rotationAxis.y, rotationAxis.z));
+
+    // ---------------other axis correction-------------------
+
+    cornerPoints = physicsObject.getCornerPointsAs3DArray();
+
+    for (unsigned int i = 0; i < 8; i++) {
+        cornerPoints[(i>>2)%2][(i>>1)%2][i%2] = Quaternion::unRotatePoint(cornerPoints[(i>>2)%2][(i>>1)%2][i%2], planeConstraint.getOrientation());
+    }
+
+    lowestPoint = cornerPoints[0][0][0];
+
+    for (int i = 0; i < 8; i++) {
+        if (cornerPoints[(i>>2)%2][(i>>1)%2][i%2].y < lowestPoint.y) {
+            lowestPoint = cornerPoints[(i>>2)%2][(i>>1)%2][i%2];
+        }
+    }
+
+    length = lowestPoint.length();
+
+    if (length == 0)
+        return;
+
+    if (abs(distance / length) <= 1)
+        targetAngle = acos(distance / length);
+    else
+        targetAngle = 0;
+
+    currentAngle = angleBetween(distanceVector, lowestPoint);
+    rotationAngle = targetAngle - currentAngle;
+
+    rotationAxis = Quaternion::rotatePoint(distanceVector.cross(lowestPoint), planeConstraint.getOrientation());
+
+    physicsObject.rotateGlobal(Quaternion(rotationAngle, rotationAxis.x, rotationAxis.y, rotationAxis.z));
+}
+
+void Constraints::applyPointConstraint(PhysicsObject& physicsObject, const vector<PointConstraint>& pointConstraints, unsigned int deltaTime) {
+    if (pointConstraints.empty())
+        return;
+
+    physicsObject.setVelocity({0, 0, 0});
+
+    // if (pointConstraints.size() == 2) TODO
+
+    if (pointConstraints.size() > 1) {
+        physicsObject.setAngularVelocity({0, 0, 0});
+        return;
+    }
+
+    sf::Vector3f positionFromObject = pointConstraints[0].getCoordinates() - physicsObject.getPosition();
+
+    physicsObject.setRotationAxisShift(Quaternion::unRotatePoint(positionFromObject, physicsObject.getOrientation()));
+
+    sf::Vector3f rotationDirection = physicsObject.getAngularVelocity();
+    physicsObject.setPosition(pointConstraints[0].getCoordinates() - Quaternion::rotatePoint(positionFromObject, Quaternion(physicsObject.getAngularVelocity().length() * (float) deltaTime / 1000000.0f, rotationDirection.x, rotationDirection.y, rotationDirection.z)));
+
 }
 
 void Constraints::addPlaneConstraint(Quaternion orientation, float offset) {
@@ -130,6 +190,10 @@ void Constraints::addPlaneConstraint(float offset) {
 
 void Constraints::addPlaneConstraint() {
     constraints.push_back(new PlaneConstraint());
+}
+
+void Constraints::addPointConstraint(PhysicsObject& physicsObject, sf::Vector3f coordinates) {
+    physicsObject.addPointConstraint(coordinates);
 }
 
 vector<ConstraintTemplate*> Constraints::getConstraints() {
